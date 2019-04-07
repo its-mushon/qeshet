@@ -1,4 +1,6 @@
 const fs = require('fs');
+const util = require('util');
+
 const readline = require('readline');
 const { google } = require('googleapis');
 
@@ -9,6 +11,12 @@ const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 // time.
 const TOKEN_PATH = 'token.json';
 
+const readFile = util.promisify(fs.readFile);
+
+async function readToken() {
+  return await readFile(TOKEN_PATH);
+}
+
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
  * given callback function.
@@ -16,16 +24,26 @@ const TOKEN_PATH = 'token.json';
  * @param {function} callback The callback to call with the authorized client.
  */
 function authorize(callback, args) {
-  // const { client_secret, client_id, redirect_uris } = credentials.installed;
-  const oAuth2Client = new google.auth.OAuth2();
-  ////cred
 
-  // Check if we have previously stored a token.
-  fs.readFile(TOKEN_PATH, (err, token) => {
-    if (err) return getNewToken(oAuth2Client, callback);
+  const { client_secret, client_id, redirect_uris } = cred.installed;
+
+  const oAuth2Client = new google.auth.OAuth2(
+    client_id,
+    client_secret,
+    redirect_uris[0]
+  );
+  ////cred
+  readToken().then(token => {
     oAuth2Client.setCredentials(JSON.parse(token));
     callback(oAuth2Client, args);
   });
+
+  //   // Check if we have previously stored a token.
+  //   fs.readFile(TOKEN_PATH, (err, token) => {
+  //     if (err) return getNewToken(oAuth2Client, callback);
+  //     oAuth2Client.setCredentials(JSON.parse(token));
+
+  //   });
 }
 
 /**
