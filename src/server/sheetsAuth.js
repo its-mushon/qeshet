@@ -1,12 +1,10 @@
 const fs = require('fs');
 const util = require('util');
 const { google } = require('googleapis');
-const TOKEN_PATH = 'token.json';
-const readFile = util.promisify(fs.readFile);
 const credentials = require(require('os').homedir() + '/credentials.js');
+const token = require(require('os').homedir() + '/token.json');
 
 async function authorize() {
-  console.log(credentials.value);
   const {
     client_secret,
     client_id,
@@ -19,10 +17,7 @@ async function authorize() {
     redirect_uris[0]
   );
 
-  let token = await readFile(TOKEN_PATH);
-  let parsed = JSON.parse(token);
-
-  oAuth2Client.setCredentials(parsed);
+  oAuth2Client.setCredentials(token);
 
   return oAuth2Client;
 }
