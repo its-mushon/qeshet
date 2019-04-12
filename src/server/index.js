@@ -29,15 +29,15 @@ function getCellRangeInSheet(auth, args) {
   });
 }
 
-var args = new Object();
+// var args = new Object();
 args = {
   spreadsheetId: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
   range: 'Class Data!A2:E'
 };
 
-const rows = sheetsAuth.authorize(getCellRangeInSheet, args);
-// console.log('sds');
-// console.log(rows);
-// rows.map(row => {
-//   console.log(`${row[0]}, ${row[4]}`);
-// });
+const ds = sheetsAuth.authorize();
+
+ds.then(
+  auth => getCellRangeInSheet(auth, args) // shows "done!" after 1 second
+  // error => alert(error) // doesn't run
+);
