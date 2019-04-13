@@ -1,10 +1,8 @@
-const fs = require('fs');
-const util = require('util');
 const { google } = require('googleapis');
 const credentials = require(require('os').homedir() + '/credentials.js');
 const token = require(require('os').homedir() + '/token.json');
 
-async function authorize() {
+function authorize() {
   const {
     client_secret,
     client_id,

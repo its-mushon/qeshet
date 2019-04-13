@@ -2,6 +2,7 @@ const express = require('express');
 const os = require('os');
 const sheetsAuth = require('./sheetsAuth.js');
 const { google } = require('googleapis');
+const util = require('util');
 
 // const app = express();
 
@@ -15,29 +16,19 @@ const { google } = require('googleapis');
  * @see https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
  * @param {google.auth.OAuth2} auth The authenticated Google OAuth client.
  */
-function getCellRangeInSheet(auth, args) {
-  const sheets = google.sheets({ version: 'v4', auth });
-  sheets.spreadsheets.values.get(args, (err, res) => {
-    if (err) return console.log('The API returned an error: ' + err);
-    const rows = res.data.values;
-    if (rows.length) {
-      console.log(rows);
-      return rows;
-    } else {
-      console.log('No data found.');
-    }
-  });
-}
+// async function getCellRangeInSheet(auth, args) {
+//   let result = await s
+//   return result;
+// }
 
 // var args = new Object();
-args = {
-  spreadsheetId: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
-  range: 'Class Data!A2:E'
+let args = {
+  spreadsheetId: '1YcrGijE2Om2czttHbYqQvoCD7Hh6phMdxvbLmBDlpCc',
+  range: 'ranged'
 };
 
-const ds = sheetsAuth.authorize();
+const auth = sheetsAuth.authorize();
+const sheets = google.sheets({ version: 'v4', auth });
+const getValueFromSpreadSheet = util.promisify(sheets.spreadsheets.values.get);
 
-ds.then(
-  auth => getCellRangeInSheet(auth, args) // shows "done!" after 1 second
-  // error => alert(error) // doesn't run
-);
+getValueFromSpreadSheet(args).then(result => console.log(result.data.values));
