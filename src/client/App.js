@@ -1,22 +1,30 @@
 import React, { Component } from 'react';
 import './app.css';
-import ReactImage from './react.png';
 
 export default class App extends Component {
-  state = { username: null };
+  state = { table: null };
 
   componentDidMount() {
-    fetch('/api/getUsername')
+    fetch('/api/getRangedData')
       .then(res => res.json())
-      .then(user => this.setState({ username: user.username }));
+      .then(data => this.setState({ table: data }));
+  }
+
+  createArray(table) {
+    const diver = table.map(cell => <div key={cell}>{cell}</div>);
+    return diver;
   }
 
   render() {
-    const { username } = this.state;
+    const table = this.state.table;
     return (
       <div>
-        {username ? <h1>{`Hello ${username}`}</h1> : <h1>Loading.. please wait!</h1>}
-        <img src={ReactImage} alt="react" />
+        {table ? (
+          /* <div>{`Hello ${table}`}</div> */
+          <div>{this.createArray(table)}</div>
+        ) : (
+          <h1>Loading.. please wait!</h1>
+        )}
       </div>
     );
   }
